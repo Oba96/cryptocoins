@@ -1,0 +1,30 @@
+name: Run Python Script
+
+on:
+  schedule:
+    - cron: '0 9 * * *'  # Runs every morning 9 hr
+  workflow_dispatch:  # Allows manual triggering
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt  # Install any dependencies
+      - name: Run Python script
+        id: run_script
+        run: |
+          python coin.py || exit 0  # Ignore exit code 1, treat as success
+      
+        env:
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
